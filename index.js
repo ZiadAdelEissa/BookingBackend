@@ -90,14 +90,14 @@ app.use(
     name: 'carwash.sid', // Custom session name
     cookie: {
       // DEPLOYMENT CONFIG: For production deployment, use environment-based settings:
-      // secure: process.env.NODE_ENV === "production", // HTTPS required in production
-      // sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // Cross-origin cookies in production
+      secure: process.env.NODE_ENV === "production", // HTTPS required in production
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // Cross-origin cookies in production
       
       // LOCALHOST CONFIG: Current settings for local development:
-      secure: false, // Allows HTTP (localhost)
-      httpOnly: false, // Allow client-side access for debugging (change to true for production)
+      // secure: false, // Allows HTTP (localhost)
+      // httpOnly: false, // Allow client-side access for debugging (change to true for production)
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
-      sameSite: "lax", // Same-origin requests
+      // sameSite: "lax", // Same-origin requests
       path: '/', // Ensure cookie is available for all paths
     },
     store: MongoStore.create({
