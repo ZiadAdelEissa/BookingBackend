@@ -99,7 +99,7 @@ app.use(
     cookie: {
       // DEPLOYMENT CONFIG: For production deployment, use environment-based settings:
       secure: process.env.NODE_ENV === "production", 
-      httpOnly:true,// HTTPS required in production
+      httpOnly:false,// HTTPS required in production
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // Cross-origin cookies in production
       path: '/', // Ensure cookie is available for all paths
@@ -166,7 +166,35 @@ app.get("/", (req, res) => {
     }
   });
 });
-
+app.get("/api/session-test", (req, res) => {
+  console.log('🧪 Session test - Session ID:', req.sessionID);
+  console.log('🧪 Session test - Session data:', req.session);
+  console.log('🧪 Session test - Cookies:', req.headers.cookie);
+  
+  // Create a test session if none exists
+  if (!req.session.testData) {
+    req.session.testData = { created: new Date(), test: 'session-working' };
+    req.session.save((err) => {
+      if (err) {
+        console.log('💥 Session save error in test:', err);
+        return res.status(500).json({ error: 'Session save failed', details: err.message });
+      }
+      res.json({
+        message: 'Session created and saved',
+        sessionId: req.sessionID,
+        sessionData: req.session.testData,
+        cookies: req.headers.cookie
+      });
+    });
+  } else {
+    res.json({
+      message: 'Session exists',
+      sessionId: req.sessionID,
+      sessionData: req.session.testData,
+      cookies: req.headers.cookie
+    });
+  }
+});
 // Health check
 app.get("/api/health", (req, res) => {
   res.status(200).json({ status: "healthy" });
