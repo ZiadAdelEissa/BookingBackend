@@ -92,15 +92,19 @@ app.use(
   session({
     secret: process.env.SESSION_SECRET || "your-secret-key",
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
     name: 'carwash.sid', // Custom session name
+        rolling: true, // Reset expiration on activity
+
     cookie: {
       // DEPLOYMENT CONFIG: For production deployment, use environment-based settings:
-      secure: process.env.NODE_ENV === "production", // HTTPS required in production
+      secure: process.env.NODE_ENV === "production", 
+      httpOnly:true,// HTTPS required in production
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // Cross-origin cookies in production
       path: '/', // Ensure cookie is available for all paths
-      
+            domain: process.env.NODE_ENV === "production" ? undefined : undefined, // Let browser handle domain
+
       // LOCALHOST CONFIG: Current settings for local development:
       // secure: false, // Allows HTTP (localhost)
       // httpOnly: false, // Allow client-side access for debugging (change to true for production)
@@ -109,7 +113,9 @@ app.use(
     store: MongoStore.create({
       mongoUrl: process.env.MONGODB_URI || "mongodb+srv://ziadadel6060:Honda999@cluster0.ysigfwu.mongodb.net/italy?retryWrites=true&w=majority",
       collectionName: "sessions",
-      touchAfter: 24 * 3600 // lazy session update
+      touchAfter: 24 * 3600 ,// lazy session update
+       stringify: false, // Store objects as-is
+      autoRemove: 'native' // Let MongoDB handle expired session cleanup
     }),
   })
 );
