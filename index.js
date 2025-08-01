@@ -141,10 +141,24 @@ app.use("/api/admin", isAuthenticated,isSuperAdmin,  adminRoutes);
 app.use("/api/branch-admin", isAuthenticated, isSuperAdmin, branchAdminRoutes);
 
 // Health check
+app.get("/", (req, res) => {
+  res.status(200).json({ 
+    message: "Car Wash Backend API", 
+    status: "running",
+    environment: process.env.NODE_ENV || "development",
+    endpoints: {
+      health: "/api/health",
+      auth: "/api/auth",
+      admin: "/api/admin",
+      user: "/api/user"
+    }
+  });
+});
+
+// Health check
 app.get("/api/health", (req, res) => {
   res.status(200).json({ status: "healthy" });
 });
-
 // ======================================
 // ERROR HANDLING
 // ======================================
