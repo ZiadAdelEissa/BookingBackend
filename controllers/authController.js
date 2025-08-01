@@ -15,9 +15,23 @@ export const login = async (req, res) => {
     }
     
     // Store user in session
-    req.session.user = user;
-    console.log('✅ Login successful, session created');
-    res.json({ message: 'Logged in successfully', user });
+     req.session.save((err) => {
+      if (err) {
+        console.log('💥 Session save error:', err);
+        return res.status(500).json({ message: 'Session save failed', error: err.message });
+      }
+      
+      console.log('✅ Login successful, session created and saved');
+      console.log('🔍 Session ID:', req.sessionID);
+      console.log('🔍 Session data:', { userId: user._id, email: user.email, role: user.role });
+      console.log('🔍 Cookie settings:', req.session.cookie);
+      
+      res.json({ 
+        message: 'Logged in successfully', 
+        user,
+        sessionId: req.sessionID // Include session ID for debugging
+      });
+    });
   } catch (error) {
     console.log('💥 Login error:', error.message);
     res.status(500).json({ message: 'Server error', error: error.message });
