@@ -97,14 +97,14 @@ app.use(
     cookie: {
       // DEPLOYMENT CONFIG: For production deployment, use environment-based settings:
       secure: process.env.NODE_ENV === "production", // HTTPS required in production
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // Cross-origin cookies in production
+      path: '/', // Ensure cookie is available for all paths
       
       // LOCALHOST CONFIG: Current settings for local development:
       // secure: false, // Allows HTTP (localhost)
       // httpOnly: false, // Allow client-side access for debugging (change to true for production)
-      maxAge: 24 * 60 * 60 * 1000, // 24 hours
       // sameSite: "lax", // Same-origin requests
-      path: '/', // Ensure cookie is available for all paths
     },
     store: MongoStore.create({
       mongoUrl: process.env.MONGODB_URI || "mongodb+srv://ziadadel6060:Honda999@cluster0.ysigfwu.mongodb.net/italy?retryWrites=true&w=majority",
