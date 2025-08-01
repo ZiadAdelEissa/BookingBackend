@@ -1,3 +1,32 @@
+/*
+=============================================================================
+                        DEPLOYMENT INSTRUCTIONS
+=============================================================================
+
+FOR RENDER DEPLOYMENT:
+1. Push code to GitHub repository
+2. Create new Web Service on Render
+3. Connect GitHub repo, set Root Directory to "Backend"
+4. Set Build Command: "npm install"
+5. Set Start Command: "npm start"
+6. Add Environment Variables in Render Dashboard:
+   - NODE_ENV=production
+   - SESSION_SECRET=asyote666
+   - MONGODB_URI=mongodb+srv://ziadadel6060:Honda999@cluster0.ysigfwu.mongodb.net/italy?retryWrites=true&w=majority
+   - FRONTEND_URL=https://your-deployed-frontend-url.com
+   - PORT=5000
+
+7. BEFORE DEPLOYMENT: Switch session cookie config below to production mode:
+   - Uncomment the environment-based secure and sameSite settings
+   - Comment out the current localhost settings
+
+FOR LOCALHOST DEVELOPMENT:
+- Use NODE_ENV=development in .env file
+- Keep current session cookie settings (secure: false, sameSite: "lax")
+
+=============================================================================
+*/
+
 import express from "express";
 import mongoose from "mongoose";
 import session from "express-session";
@@ -58,15 +87,23 @@ app.use(
     secret: process.env.SESSION_SECRET || "your-secret-key",
     resave: false,
     saveUninitialized: false,
+    name: 'carwash.sid', // Custom session name
     cookie: {
-      secure: process.env.NODE_ENV === "production",
-      httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000,
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      // DEPLOYMENT CONFIG: For production deployment, use environment-based settings:
+      // secure: process.env.NODE_ENV === "production", // HTTPS required in production
+      // sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // Cross-origin cookies in production
+      
+      // LOCALHOST CONFIG: Current settings for local development:
+      secure: false, // Allows HTTP (localhost)
+      httpOnly: false, // Allow client-side access for debugging (change to true for production)
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      sameSite: "lax", // Same-origin requests
+      path: '/', // Ensure cookie is available for all paths
     },
     store: MongoStore.create({
       mongoUrl: process.env.MONGODB_URI || "mongodb+srv://ziadadel6060:Honda999@cluster0.ysigfwu.mongodb.net/italy?retryWrites=true&w=majority",
       collectionName: "sessions",
+      touchAfter: 24 * 3600 // lazy session update
     }),
   })
 );
