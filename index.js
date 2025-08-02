@@ -92,7 +92,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: false, // Allows HTTP (localhost)
+      secure: true, // Allows HTTP (localhost)
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,
       sameSite: "lax", // Same-origin requests
