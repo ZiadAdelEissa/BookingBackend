@@ -72,8 +72,12 @@ app.use(
 
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "https://quickitt.netlify.app",
-    methods: ["GET", "POST", "PUT", "DELETE","PATCH", "OPTIONS"],
+ origin: [
+    'http://localhost:5173', // Keep your local dev environment
+    'https://quickitt.netlify.app', // Add your Netlify domain
+    // Add any other domains you need
+  ],
+      methods: ["GET", "POST", "PUT", "DELETE","PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
