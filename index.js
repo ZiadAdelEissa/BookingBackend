@@ -73,9 +73,9 @@ app.use(
 app.use(
   cors({
      origin: [
-      process.env.FRONTEND_URL || "http://localhost:5173",
+      process.env.FRONTEND_URL || 
       "https://car-wash-6v82.onrender.com", // Your deployed frontend
-      "http://localhost:5173" // Local development
+      // Local development
     ],
       methods: ["GET", "POST", "PUT", "DELETE","PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
