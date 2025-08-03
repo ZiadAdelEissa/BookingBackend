@@ -94,7 +94,7 @@ app.use(
     cookie: {
      secure: process.env.NODE_ENV === "development", // Allows HTTP (localhost)
       httpOnly: true,
-      maxAge: 86400000,
+      maxAge: 24 * 60 * 60 * 86400000,
      sameSite: process.env.NODE_ENV === "development" ? "none" : "lax",
       path: '/', // Same-origin requests
     },
