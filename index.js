@@ -100,7 +100,7 @@ app.use(
     },
     store: MongoStore.create({
       mongoUrl: process.env.MONGODB_URI || "mongodb+srv://ziadadel6060:Honda999@cluster0.ysigfwu.mongodb.net/italy?retryWrites=true&w=majority",
-      collectionName: "sessions",
+      collectionName: "session",
       ttl:14*24*60*60
     }),
     
