@@ -94,13 +94,14 @@ app.use(
     cookie: {
      secure: process.env.NODE_ENV === "development", // Allows HTTP (localhost)
       httpOnly: true,
-      maxAge: 24 * 60 * 60 * 86400000,
+      maxAge: 24 * 60 * 60 * 1000,
      sameSite: process.env.NODE_ENV === "development" ? "none" : "lax",
       path: '/', // Same-origin requests
     },
     store: MongoStore.create({
       mongoUrl: process.env.MONGODB_URI || "mongodb+srv://ziadadel6060:Honda999@cluster0.ysigfwu.mongodb.net/italy?retryWrites=true&w=majority",
       collectionName: "sessions",
+      ttl:14*24*60*60
     }),
     
     /* DEPLOYMENT SESSION CONFIG: Uncomment below for production deployment on Render:
