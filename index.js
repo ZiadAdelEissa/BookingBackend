@@ -73,8 +73,8 @@ app.use(
 app.use(
   cors({
  origin: [
-    'http://localhost:5173', // Keep your local dev environment
-    'https://quickitt.netlify.app', // Add your Netlify domain
+    // 'http://localhost:5173', // Keep your local dev environment
+    'https://car-wash-6v82.onrender.com', // Add your Netlify domain
     // Add any other domains you need
   ],
       methods: ["GET", "POST", "PUT", "DELETE","PATCH", "OPTIONS"],
