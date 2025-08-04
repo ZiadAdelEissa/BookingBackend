@@ -96,7 +96,7 @@ app.use(
      secure: true, //process.env.NODE_ENV === "production", // Allows HTTP (localhost)
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,
-     sameSite: none, //process.env.NODE_ENV === "production" ? "none" : "lax",
+     sameSite:" none", //process.env.NODE_ENV === "production" ? "none" : "lax",
      domain:".onrender.com", //process.env.NODE_ENV === "production"? "onrender.com" : undefined,
      // path: '/', // Same-origin requests
     },
