@@ -28,7 +28,6 @@ FOR LOCALHOST DEVELOPMENT:
 */
 
 import express from "express";
-import mongoose from "mongoose";
 import session from "express-session";
 import cors from "cors";
 import MongoStore from "connect-mongo";
@@ -36,6 +35,17 @@ import dotenv from "dotenv";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import morgan from "morgan";
+
+// Import optimized database connection
+import { connectDB } from "./config/database.js";
+
+// Import performance middleware
+import { 
+  compressionMiddleware, 
+  cacheControlMiddleware, 
+  timeoutMiddleware, 
+  regionalOptimizationMiddleware 
+} from "./middleware/performanceMiddleware.js";
 
 // Load environment variables
 dotenv.config();
@@ -48,6 +58,7 @@ import packageRoutes from "./routes/packageRoutes.js";
 import serviceRoutes from "./routes/serviceRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import branchAdminRoutes from "./routes/branchAdminRoutes.js";
+import healthRoutes from "./routes/healthRoutes.js";
 
 // Middleware Imports
 import {
@@ -62,11 +73,22 @@ const app = express();
 // MIDDLEWARE SETUP
 // ======================================
 app.use(morgan("dev"));
+
+// Performance optimizations
+app.use(compressionMiddleware);
+app.use(cacheControlMiddleware);
+app.use(timeoutMiddleware(30000)); // 30 second timeout
+app.use(regionalOptimizationMiddleware);
+
 app.use(helmet());
 app.use(
   rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 100,
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per windowMs
+    message: {
+      error: "Too many requests",
+      message: "Please try again later"
+    }
   })
 );
 
@@ -74,8 +96,9 @@ app.use(
   cors({
      origin: [
       process.env.FRONTEND_URL || "http://localhost:5173",
-      "https://car-wash-6v82.onrender.com", // Your deployed frontend
-      "http://localhost:5173" // Local development
+      "https://your-frontend-app.ondigitalocean.app", // DigitalOcean frontend
+      "http://localhost:5173", // Local development
+      "http://localhost:3000" // Alternative local port
     ],
       methods: ["GET", "POST", "PUT", "DELETE","PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -88,57 +111,37 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(
   session({
-    secret: process.env.SESSION_SECRET ,
+    secret: process.env.SESSION_SECRET || "fallback-secret-key",
     resave: false,
     saveUninitialized: false,
-    proxy:true,
+    proxy: true,
     cookie: {
-     secure:  process.env.NODE_ENV === "production" ? "true" : undefined, // Allows HTTP (localhost)
+      secure: process.env.NODE_ENV === "production", // HTTPS in production
       httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000,
-     sameSite:"none", //process.env.NODE_ENV === "production" ? "none" : "lax",
-     domain: "onrender.com", //process.env.NODE_ENV === "production"? "onrender.com" : undefined,
-      path: '/', // Same-origin requests
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      domain: process.env.NODE_ENV === "production" ? ".ondigitalocean.app" : undefined,
+      path: '/',
     },
     store: MongoStore.create({
       mongoUrl: process.env.MONGODB_URI || "mongodb+srv://ziadadel6060:Honda999@cluster0.ysigfwu.mongodb.net/italy?retryWrites=true&w=majority",
       collectionName: "sessions",
-      ttl:14*24*60*60
+      ttl: 14 * 24 * 60 * 60 // 14 days
     }),
-    
-    /* DEPLOYMENT SESSION CONFIG: Uncomment below for production deployment on Render:
-    
-    cookie: {
-      secure: process.env.NODE_ENV === "production", // HTTPS required in production
-      httpOnly: true, // Secure cookies in production
-      maxAge: 24 * 60 * 60 * 1000, // 24 hours
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // Cross-origin cookies
-      path: '/', // Available for all paths
-    },
-    
-    */
   })
 );
 
 // ======================================
 // DATABASE CONNECTION
 // ======================================
-const connectDB = async () => {
-  try {
-    await mongoose.connect(
-      process.env.MONGODB_URI || "mongodb+srv://ziadadel6060:Honda999@cluster0.ysigfwu.mongodb.net/italy?retryWrites=true&w=majority"
-    );
-    console.log("MongoDB connected successfully");
-  } catch (err) {
-    console.error("MongoDB connection error:", err);
-    process.exit(1);
-  }
-};
 connectDB();
 
 // ======================================
 // ROUTE DEFINITIONS
 // ======================================
+// Health check routes (should be first)
+app.use("/", healthRoutes);
+
 // Public routes
 app.use("/api/auth", authRoutes);
 app.use("/api/services", serviceRoutes); // Only GET is public
@@ -151,21 +154,6 @@ app.use("/api/bookings", isAuthenticated, bookingRoutes);
 // Admin routes
 app.use("/api/admin", isAuthenticated,isSuperAdmin,  adminRoutes);
 app.use("/api/branch-admin", isAuthenticated, isSuperAdmin, branchAdminRoutes);
-
-// Root route for deployment testing
-app.get("/", (req, res) => {
-  res.status(200).json({ 
-    message: "Car Wash Backend API", 
-    status: "running",
-    environment: process.env.NODE_ENV || "development",
-    endpoints: {
-      health: "/api/health",
-      auth: "/api/auth",
-      admin: "/api/admin",
-      user: "/api/user"
-    }
-  });
-});
 
 // Health check
 app.get("/api/health", (req, res) => {
@@ -198,10 +186,12 @@ app.use((err, req, res, next) => {
 // SERVER STARTUP
 // ======================================
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(
     `Server running in ${
       process.env.NODE_ENV || "development"
     } mode on port ${PORT}`
   );
+  console.log(`Database region: Bahrain (MongoDB Atlas)`);
+  console.log(`Optimized for users in: Egypt, Italy`);
 });
