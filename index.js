@@ -73,8 +73,9 @@ app.use(
 app.use(
   cors({
      origin: [
-      process.env.FRONTEND_URL || "https://car-wash-6v82.onrender.com", // Your deployed frontend
-      // Local development
+      process.env.FRONTEND_URL || "http://localhost:5173",
+      "https://car-wash-6v82.onrender.com", // Your deployed frontend
+      "http://localhost:5173" // Local development
     ],
       methods: ["GET", "POST", "PUT", "DELETE","PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -92,7 +93,7 @@ app.use(
     saveUninitialized: false,
     proxy:true,
     cookie: {
-     secure: true, //process.env.NODE_ENV === "production", // Allows HTTP (localhost)
+     secure:  process.env.NODE_ENV === "production" ? "true" : undefined, // Allows HTTP (localhost)
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,
      sameSite:"none", //process.env.NODE_ENV === "production" ? "none" : "lax",
