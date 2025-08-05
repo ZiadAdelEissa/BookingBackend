@@ -12,8 +12,8 @@ export const connectDB = async () => {
       socketTimeoutMS: 45000, // How long to wait for a response
       
       // Buffering settings
-      bufferMaxEntries: 0, // Disable mongoose buffering
-      bufferCommands: false, // Disable mongoose buffering
+      // bufferMaxEntries: 0, // Disable mongoose buffering
+      // bufferCommands: false, // Disable mongoose buffering
       
       // Write concern for better performance
       writeConcern: {
