@@ -116,11 +116,11 @@ app.use(
     saveUninitialized: false,
     proxy: true,
     cookie: {
-      secure: process.env.NODE_ENV === "production", // HTTPS in production
+      secure: false,//process.env.NODE_ENV === "production", // HTTPS in production
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      domain: process.env.NODE_ENV === "production" ? ".ondigitalocean.app" : undefined,
+      sameSite: "none", //process.env.NODE_ENV === "production" ? "none" : "lax",
+      //domain:"", //process.env.NODE_ENV === "production" ? ".ondigitalocean.app" : undefined,
       path: '/',
     },
     store: MongoStore.create({
