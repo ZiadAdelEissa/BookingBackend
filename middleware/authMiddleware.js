@@ -2,8 +2,8 @@ import User from "../models/User.js";
 import Booking from "../models/Booking.js";
 import UserPackage from "../models/UserPackage.js";
 export const isAuthenticated = (req, res, next) => {
-  console.log('🔐 Auth check - Session exists:', !!req.session.User);
-  console.log('🔐 Session user:', req.session.User ? { id: req.session.User._id, email: req.session.User.email, role: req.session.User.role } : 'null');
+  console.log('🔐 Auth check - Session exists:', !!req.session.user);
+  console.log('🔐 Session user:', req.session.user ? { id: req.session.user._id, email: req.session.user.email, role: req.session.user.role } : 'null');
   
   if (!req.session.user) {
     console.log('❌ No session found - user not authenticated');
