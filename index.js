@@ -112,14 +112,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "fallback-secret-key",
-    resave: true,
-    saveUninitialized: true,
+    resave: false,
+    saveUninitialized: false,
     proxy: true,
     cookie: {
-      secure:true, //process.env.NODE_ENV === "production", // HTTPS in production
+      secure: false, //process.env.NODE_ENV === "production", // HTTPS in production
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "none",
+      sameSite: "none",//production" ? "none" : "none",
      // domain: process.env.NODE_ENV === "production" ? ".ondigitalocean.app" : undefined,
       path: '/',
     },
