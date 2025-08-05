@@ -157,6 +157,7 @@ app.use("/api/branch-admin", isAuthenticated, isSuperAdmin, branchAdminRoutes);
 
 // Health check
 app.get("/api/health", (req, res) => {
+  req.session.isAuth = true;
   res.status(200).json({ status: "healthy" });
 });
 

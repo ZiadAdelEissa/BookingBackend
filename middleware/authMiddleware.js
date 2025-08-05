@@ -5,15 +5,12 @@ export const isAuthenticated = (req, res, next) => {
   console.log('🔐 Auth check - Session exists:', !!req.session.user);
   console.log('🔐 Session user:', req.session.user ? { id: req.session.user._id, email: req.session.user.email, role: req.session.user.role } : 'null');
   
-  if (!req.session.user) {
-    console.log('❌ No session found - user not authenticated');
-    return res.status(401).json({
-      success: false,
-      message: "Unauthorized - Please login first",
-    });
+   if (req.session && req.session.user) {
+    // User is logged in. Their data (including role) is in req.session.user
+    next(); // Proceed to the next middleware or route handler
+  } else {
+    res.status(401).json({ message: 'Unauthorized: Please log in' });
   }
-  console.log('✅ User authenticated, proceeding...');
-  next();
 };
 // 1. Core Authentication Middleware
 export const verifySession = (req, res, next) => {
