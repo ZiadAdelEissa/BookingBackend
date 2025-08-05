@@ -114,19 +114,19 @@ app.use(
     secret: process.env.SESSION_SECRET || "fallback-secret-key",
     resave: false,
     saveUninitialized: false,
-    proxy: true,
+   // proxy: true,
     cookie: {
       secure: false,//process.env.NODE_ENV === "production", // HTTPS in production
       httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000, // 24 hours
-      sameSite: "none", //process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 1000 * 60 * 60 * 24, // 24 hours
+      sameSite: "lax", //process.env.NODE_ENV === "production" ? "none" : "lax",
       //domain:"", //process.env.NODE_ENV === "production" ? ".ondigitalocean.app" : undefined,
       path: '/',
     },
     store: MongoStore.create({
       mongoUrl: process.env.MONGODB_URI || "mongodb+srv://ziadadel6060:Honda999@cluster0.ysigfwu.mongodb.net/italy?retryWrites=true&w=majority",
       collectionName: "sessions",
-      ttl: 14 * 24 * 60 * 60 // 14 days
+      // ttl: 14 * 24 * 60 * 60 // 14 days
     }),
   })
 );
@@ -160,7 +160,14 @@ app.get("/api/health", (req, res) => {
   req.session.isAuth = true;
   res.status(200).json({ status: "healthy" });
 });
-
+app.get('/api/test-session', (req, res) => {
+  if (req.session.views) {
+    req.session.views++;
+  } else {
+    req.session.views = 1;
+  }
+  res.json({ views: req.session.views });
+});
 // ======================================
 // ERROR HANDLING
 // ======================================
