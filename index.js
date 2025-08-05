@@ -112,15 +112,15 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "fallback-secret-key",
-    resave: false,
-    saveUninitialized: false,
+    resave: true,
+    saveUninitialized: true,
     proxy: true,
     cookie: {
-      secure: process.env.NODE_ENV === "production" ? "development" : false, // HTTPS in production
+      secure:true, //process.env.NODE_ENV === "production", // HTTPS in production
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      domain: process.env.NODE_ENV === "production" ? "http://localhost:5173" : undefined,
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "none",
+     // domain: process.env.NODE_ENV === "production" ? ".ondigitalocean.app" : undefined,
       path: '/',
     },
     store: MongoStore.create({
