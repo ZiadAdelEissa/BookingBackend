@@ -12,7 +12,7 @@ export const isAuthenticated = (req, res, next) => {
   console.log('✅ User authenticated, proceeding...');
   next();
 };
-console.log('🔐 Auth check - Session exists:', !!req.session.user);
+console.log('🔐 Auth check - Session exists:', !! req.session.user);
 console.log('🔐 Session user:', req.session.user ? { id: req.session.user._id, email: req.session.user.email, role: req.session.user.role } : 'null');
 // 1. Core Authentication Middleware
 export const verifySession = (req, res, next) => {
