@@ -2,6 +2,9 @@ import User from "../models/User.js";
 import Booking from "../models/Booking.js";
 import UserPackage from "../models/UserPackage.js";
 export const isAuthenticated = (req, res, next) => {
+  console.log('🔐 Auth check - Session exists:', !! req.session.user);
+  console.log('🔐 Session user:', req.session.user ? { id: req.session.user._id, email: req.session.user.email, role: req.session.user.role } : 'null');
+  
   if (!req.session.user) {
     console.log('❌ No session found - user not authenticated');
     return res.status(401).json({
@@ -12,8 +15,6 @@ export const isAuthenticated = (req, res, next) => {
   console.log('✅ User authenticated, proceeding...');
   next();
 };
-console.log('🔐 Auth check - Session exists:', !! req.session.user);
-console.log('🔐 Session user:', req.session.user ? { id: req.session.user._id, email: req.session.user.email, role: req.session.user.role } : 'null');
 // 1. Core Authentication Middleware
 export const verifySession = (req, res, next) => {
   if (!req.session.user?._id) {
