@@ -96,7 +96,7 @@ app.use(
   cors({
      origin: [
       process.env.FRONTEND_URL || "http://localhost:5173",
-      "https://your-frontend-app.ondigitalocean.app", // DigitalOcean frontend
+      "http://46.101.71.136", // DigitalOcean frontend
       "http://localhost:5173", // Local development
       "http://localhost:3000" // Alternative local port
     ],
