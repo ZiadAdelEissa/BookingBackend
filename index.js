@@ -116,10 +116,10 @@ app.use(
     saveUninitialized: false,
     proxy: true,
     cookie: {
-      secure: true, //process.env.NODE_ENV === "production", // HTTPS in production
+      secure: false, //process.env.NODE_ENV === "production", // HTTPS in production
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
-      sameSite: "none",//production" ? "none" : "none",
+      sameSite: "lax",//production" ? "none" : "none",
      // domain: process.env.NODE_ENV === "production" ? ".ondigitalocean.app" : undefined,
       path: '/',
     },
